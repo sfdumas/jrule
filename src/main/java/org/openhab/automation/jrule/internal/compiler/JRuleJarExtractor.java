@@ -25,6 +25,7 @@ import java.util.Vector;
 
 import org.openhab.automation.jrule.internal.JRuleLog;
 import org.openhab.automation.jrule.rules.JRule;
+import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,15 @@ public class JRuleJarExtractor {
     private static final String LOG_NAME_JAR = "JRuleJar";
 
     public void extractJRuleJar(String jarFilePath) {
-        Vector<Class<?>> loadedClasses = getLoadedClasses(JRule.class.getClassLoader());
+        extractJar(JRule.class.getClassLoader(), jarFilePath);
+    }
+
+    public void extractOpenhabCoreJar(String jarFilePath) {
+        extractJar(State.class.getClassLoader(), jarFilePath);
+    }
+
+    private void extractJar(ClassLoader cLoader, String jarFilePath) {
+        Vector<Class<?>> loadedClasses = getLoadedClasses(cLoader);
         if (loadedClasses == null || loadedClasses.isEmpty()) {
             JRuleLog.error(logger, LOG_NAME_JAR, "Failed to write and extract jar: {}", jarFilePath);
             return;
